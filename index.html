@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navrang Garba - Pass Registration</title>
+  <title>Navrang Garba 2.0 - Pass Registration</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; padding: 20px; }
@@ -26,6 +26,7 @@
 <body>
 
   <div class="form-container">
+    <h2 style="text-align: center; margin-top: 0; color: #333;">Navrang Garba 2.0</h2>
     <form id="registrationForm">
       <div class="form-group">
         <label for="fullName">Full Name</label>
@@ -56,9 +57,9 @@
         <label for="passType">Select Pass Type</label>
         <select id="passType" required>
           <option value="" disabled selected>Choose a pass</option>
+          <option value="299">Audience Pass — ₹299</option>
           <option value="399">Freestyle Pass — ₹399</option>
-          <option value="599">VIP Pass — ₹599</option>
-          <option value="999">All Access Pass — ₹999</option>
+          <option value="499">Participant Pass — ₹499</option>
         </select>
       </div>
 
