@@ -1,177 +1,88 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Navrang Garba 2.0 - Pass Registration</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-    .card { background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
-    h2 { text-align: center; color: #333; margin-bottom: 20px; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; font-weight: 600; margin-bottom: 5px; color: #555; }
-    input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
-    .amount-box { background: #f0f4ff; padding: 12px; border-radius: 6px; text-align: center; font-size: 22px; font-weight: bold; color: #1062fe; margin-bottom: 15px; }
-    .btn-pay { background: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; display: block; text-align: center; margin-bottom: 15px; }
-    .btn-submit { background: #28a745; color: white; border: none; padding: 14px; width: 100%; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
-    .btn-submit:disabled { background: #cccccc; cursor: not-allowed; }
-    #msg { margin-top: 15px; font-weight: bold; text-align: center; }
-    .error { color: #d9534f; }
-    .success { color: #28a745; }
-  </style>
-</head>
-<body>
+const SUPABASE_URL = "https://rdjdsqlawhawoywgvyro.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_c_uKHsH5pKT8TyKa1IqC-g_-nLUMI5W";
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-<div class="card">
-  <h2>Navrang Garba 2.0 Registration</h2>
+const BUCKET_NAME = 'Payment_Screenshot';
+const TABLE_NAME = 'Registration';
+
+document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
   
-  <form id="regForm">
-    <div class="form-group">
-      <label for="fullName">Full Name</label>
-      <input type="text" id="fullName" required placeholder="Aapka Poora Naam">
-    </div>
-
-    <div class="form-group">
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" required pattern="[0-9]{10}" placeholder="10-digit Mobile Number">
-    </div>
-
-    <div class="form-group">
-      <label for="passType">Select Pass Type</label>
-      <select id="passType" onchange="updateAmount()">
-        <option value="Audience Pass" data-price="299">Audience Pass - ₹299</option>
-        <option value="Couple Pass" data-price="499">Couple Pass - ₹499</option>
-        <option value="VIP Pass" data-price="999">VIP Pass - ₹999</option>
-      </select>
-    </div>
-
-    <div class="amount-box">
-      Total Amount: ₹<span id="displayAmount">299</span>
-    </div>
-
-    <a id="upiBtn" href="#" class="btn-pay">PAY VIA UPI</a>
-
-    <div class="form-group">
-      <label for="utr">UTR / Transaction ID (After Payment)</label>
-      <input type="text" id="utr" required placeholder="12-digit UTR/Transaction ID">
-    </div>
-
-    <div class="form-group">
-      <label for="screenshot">Payment Screenshot</label>
-      <input type="file" id="screenshot" accept="image/*" required>
-    </div>
-
-    <button type="submit" id="submitBtn" class="btn-submit">SUBMIT REGISTRATION</button>
-  </form>
-
-  <div id="msg"></div>
-</div>
-
-<script>
-  // 1. Supabase Initialization
-  const SUPABASE_URL = "https://rdjdsqlawhawoywgvyro.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_c_uKHsH5pKT8TyKa1IqC-g_-nLUMI5W";
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  // Exact Database & Bucket Names Matching Your Supabase
-  const TABLE_NAME = 'Registration';
-  const BUCKET_NAME = 'Payment_Screenshot';
-  const UPI_ID = 'dwivediadarsh628@okaxis';
-
-  function updateAmount() {
-    const select = document.getElementById('passType');
-    const selectedOption = select.options[select.selectedIndex];
-    const price = selectedOption.getAttribute('data-price');
-    
-    document.getElementById('displayAmount').innerText = price;
-    
-    // Dynamic UPI Link Setup
-    const upiUrl = `upi://pay?pa=${UPI_ID}&pn=NavrangGarba&am=${price}&cu=INR`;
-    document.getElementById('upiBtn').href = upiUrl;
+  const submitBtn = document.getElementById('submitBtn') || e.target.querySelector('button[type="submit"]');
+  const msgDiv = document.getElementById('errorMessage') || document.getElementById('msg');
+  
+  if (msgDiv) {
+    msgDiv.style.color = '#000';
+    msgDiv.innerText = 'Uploading screenshot and saving...';
   }
+  if (submitBtn) submitBtn.disabled = true;
 
-  // Initial Load Call
-  document.addEventListener("DOMContentLoaded", updateAmount);
-
-  // 2. Form Submission Handler
-  document.getElementById('regForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  try {
+    // Basic Details
+    const fullName = document.getElementById('fullName').value;
+    const phone = document.getElementById('phone').value;
+    const gender = document.getElementById('gender').value;
+    const dob = document.getElementById('dob').value;
     
-    const msgDiv = document.getElementById('msg');
-    const submitBtn = document.getElementById('submitBtn');
-    
-    msgDiv.className = '';
-    msgDiv.innerText = 'Uploading screenshot and saving registration...';
-    submitBtn.disabled = true;
+    // Pass & Payment Details
+    const passTypeSelect = document.getElementById('passType');
+    const passType = passTypeSelect.value;
+    const amountText = document.getElementById('totalAmount') ? document.getElementById('totalAmount').innerText : "299";
+    const amount = parseInt(amountText.replace(/[^0-9]/g, '')) || 299;
+    const utr = document.getElementById('utr').value;
+    const fileInput = document.getElementById('screenshot');
+    const file = fileInput.files[0];
 
-    try {
-      const fullName = document.getElementById('fullName').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const passSelect = document.getElementById('passType');
-      const passType = passSelect.value;
-      const amount = parseInt(passSelect.options[passSelect.selectedIndex].getAttribute('data-price'));
-      const utr = document.getElementById('utr').value.trim();
-      const fileInput = document.getElementById('screenshot');
-      const file = fileInput.files[0];
+    if (!file) throw new Error("Please select a payment screenshot.");
 
-      if (!file) {
-        throw new Error("Please select a screenshot image.");
-      }
+    // Unique File Naming
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}_${phone}.${fileExt}`;
 
-      // Unique File Name Generation
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}_${phone}.${fileExt}`;
+    // 1. Upload Screenshot to Storage Bucket
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from(BUCKET_NAME)
+      .upload(fileName, file);
 
-      // A. Upload File to Storage Bucket ('Payment_Screenshot')
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from(BUCKET_NAME)
-        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+    if (uploadError) throw new Error(uploadError.message);
 
-      if (uploadError) {
-        throw new Error(`Storage Error: ${uploadError.message}`);
-      }
+    // 2. Fetch Public URL
+    const { data: publicUrlData } = supabase.storage
+      .from(BUCKET_NAME)
+      .getPublicUrl(fileName);
 
-      // Public Image URL Retrieval
-      const { data: publicUrlData } = supabase.storage
-        .from(BUCKET_NAME)
-        .getPublicUrl(fileName);
+    const screenshotUrl = publicUrlData.publicUrl;
 
-      const screenshotUrl = publicUrlData.publicUrl;
+    // 3. Save Record to Database (Registration Table)
+    const { data: insertData, error: insertError } = await supabase
+      .from(TABLE_NAME)
+      .insert([
+        {
+          full_name: fullName,
+          phone: phone,
+          gender: gender,
+          dob: dob,
+          pass_type: passType,
+          amount: amount,
+          utr: utr,
+          screenshot_url: screenshotUrl
+        }
+      ]);
 
-      // B. Insert Record into Table ('Registration')
-      const { data: insertData, error: insertError } = await supabase
-        .from(TABLE_NAME)
-        .insert([
-          {
-            full_name: fullName,
-            phone: phone,
-            pass_type: passType,
-            amount: amount,
-            utr: utr,
-            screenshot_url: screenshotUrl,
-            status: 'Pending'
-          }
-        ]);
+    if (insertError) throw new Error(insertError.message);
 
-      if (insertError) {
-        throw new Error(`Database Error: ${insertError.message}`);
-      }
-
-      msgDiv.className = 'success';
-      msgDiv.innerText = '✅ Registration Successful! Aapka pass record submit ho chuka hai.';
-      document.getElementById('regForm').reset();
-      updateAmount();
-
-    } catch (err) {
-      msgDiv.className = 'error';
-      msgDiv.innerText = `Error: ${err.message}`;
-    } finally {
-      submitBtn.disabled = false;
+    if (msgDiv) {
+      msgDiv.style.color = 'green';
+      msgDiv.innerText = '✅ Registration Successful!';
     }
-  });
-</script>
+    this.reset();
 
-</body>
-</html>
+  } catch (err) {
+    if (msgDiv) {
+      msgDiv.style.color = 'red';
+      msgDiv.innerText = `Error: ${err.message}`;
+    }
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
+});
