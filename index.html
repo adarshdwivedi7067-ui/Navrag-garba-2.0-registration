@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navrang Garba 2.0 - Pass Registration</title>
+  <title>Navrang Garba - Pass Registration</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; padding: 20px; }
@@ -26,7 +26,6 @@
 <body>
 
   <div class="form-container">
-    <h2 style="text-align: center; margin-top: 0; color: #333;">Navrang Garba 2.0</h2>
     <form id="registrationForm">
       <div class="form-group">
         <label for="fullName">Full Name</label>
@@ -55,7 +54,7 @@
 
       <div class="form-group">
         <label for="passType">Select Pass Type</label>
-        <select id="passType" required>
+        <select id="passType" onchange="updatePassPrice()" required>
           <option value="" disabled selected>Choose a pass</option>
           <option value="299">Audience Pass - ₹299</option>
           <option value="399">Freestyle Pass - ₹399</option>
@@ -99,24 +98,23 @@
     const TABLE_NAME = 'registrations';
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const passSelect = document.getElementById('passType');
-    const amountDisplay = document.getElementById('totalAmount');
-    const payButton = document.getElementById('payBtn');
     const upiId = "dwivediadarsh628@okaxis";
 
     function updatePassPrice() {
+      const passSelect = document.getElementById('passType');
+      const amountDisplay = document.getElementById('totalAmount');
+      const payButton = document.getElementById('payBtn');
       const price = passSelect.value;
-      
+
       if (price) {
         const selectedText = passSelect.options[passSelect.selectedIndex].text;
         const passName = selectedText.split('-')[0].trim();
 
-        amountDisplay.innerText = `₹${price}`;
-        payButton.innerText = `PAY ₹${price} VIA UPI`;
+        amountDisplay.innerText = "₹" + price;
+        payButton.innerText = "PAY ₹" + price + " VIA UPI";
         payButton.classList.remove('disabled');
-        
-        const upiUrl = `upi://pay?pa=${upiId}&pn=Adarsh%20Dwivedi&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
+
+        const upiUrl = "upi://pay?pa=" + upiId + "&pn=Adarsh%20Dwivedi&am=" + price + "&cu=INR&tn=" + encodeURIComponent(passName);
         payButton.setAttribute('href', upiUrl);
       } else {
         amountDisplay.innerText = '₹0';
@@ -125,9 +123,6 @@
         payButton.setAttribute('href', '#');
       }
     }
-
-    passSelect.addEventListener('change', updatePassPrice);
-    passSelect.addEventListener('input', updatePassPrice);
 
     const form = document.getElementById('registrationForm');
     const statusMsg = document.getElementById('statusMsg');
@@ -141,6 +136,8 @@
       statusMsg.innerText = "Processing registration...";
 
       try {
+        const passSelect = document.getElementById('passType');
+        const amountDisplay = document.getElementById('totalAmount');
         const fileInput = document.getElementById('screenshot');
         const file = fileInput.files[0];
         const fileName = `${Date.now()}_${file.name}`;
@@ -178,9 +175,7 @@
         statusMsg.style.color = "green";
         statusMsg.innerText = "Registration Successful!";
         form.reset();
-        amountDisplay.innerText = "₹0";
-        payButton.innerText = "SELECT PASS FIRST";
-        payButton.classList.add('disabled');
+        updatePassPrice();
 
       } catch (err) {
         console.error("Error:", err);
