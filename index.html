@@ -62,608 +62,138 @@
       padding: 18px;
       border-radius: 12px;
       background: #f1f1f1;
-      text-align: center;
+      text-align: center;<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Pass Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
     }
-
+    .form-container {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #333;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    .amount-box {
+      background-color: #eef3f8;
+      text-align: center;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
     .amount-title {
-      font-size: 15px;
+      font-size: 14px;
       color: #666;
     }
-
-    .amount {
-      font-size: 30px;
+    .amount-value {
+      font-size: 28px;
       font-weight: bold;
-      margin-top: 5px;
+      color: #111;
+      margin-top: 4px;
     }
-
-    .upi-box {
-      margin-top: 18px;
-      padding: 16px;
-      text-align: center;
-      border-radius: 12px;
-      background: #eeeeee;
-    }
-
-    .upi-id {
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 7px;
-    }
-
-    button {
+    .pay-btn {
       width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background-color: #4b6b94;
+      color: white;
       border: none;
-      border-radius: 9px;
-      padding: 15px;
-      margin-top: 18px;
-      font-size: 17px;
+      border-radius: 6px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
+      text-transform: uppercase;
     }
-
-    #payButton {
-      background: #222;
-      color: white;
-    }
-
-    #payButton:disabled {
-      background: #aaa;
+    .pay-btn:disabled {
+      background-color: #a0b2c6;
       cursor: not-allowed;
-    }
-
-    #submitButton {
-      background: #198754;
-      color: white;
-    }
-
-    #message {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .note {
-      margin-top: 10px;
-      text-align: center;
-      color: #777;
-      font-size: 13px;
     }
   </style>
 </head>
-
 <body>
 
-<div class="container">
+  <div class="form-container">
+    <div class="form-group">
+      <label for="gender">Select Gender</label>
+      <select id="gender">
+        <option value="" disabled selected>Select Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
 
-  <h1>🎉 NAVRANG GARBA 2.0</h1>
-  <div class="subtitle">Online Registration</div>
+    <div class="form-group">
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob">
+    </div>
 
-  <form id="registrationForm">
+    <!-- Main Dropdown Logic -->
+    <div class="form-group">
+      <label for="passType">Select Pass Type</label>
+      <select id="passType">
+        <option value="" disabled selected>Choose a pass</option>
+        <option value="399">Freestyle Pass — ₹399</option>
+        <option value="599">VIP Pass — ₹599</option>
+        <option value="999">All Access Pass — ₹999</option>
+      </select>
+    </div>
 
-    <!-- NAME -->
-    <label>Full Name</label>
-    <input
-      type="text"
-      id="name"
-      placeholder="Enter your full name"
-      required
-    >
-
-    <!-- MOBILE -->
-    <label>Mobile Number</label>
-    <input
-      type="tel"
-      id="mobile"
-      placeholder="10 digit mobile number"
-      maxlength="10"
-      inputmode="numeric"
-      required
-    >
-
-    <!-- GENDER -->
-    <label>Gender</label>
-    <select id="gender" required>
-      <option value="">Select Gender</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
-      <option value="Other">Other</option>
-    </select>
-
-    <!-- DOB -->
-    <label>Date of Birth</label>
-    <input
-      type="date"
-      id="dob"
-      required
-    >
-
-    <!-- PASS -->
-    <label>Select Pass Type</label>
-
-    <select id="pass_type" required>
-
-      <option value="" data-amount="0">
-        -- Select Pass --
-      </option>
-
-      <option
-        value="Participant Pass"
-        data-amount="499"
-      >
-        Participant Pass — ₹499
-      </option>
-
-      <option
-        value="Freestyle Pass"
-        data-amount="399"
-      >
-        Freestyle Pass — ₹399
-      </option>
-
-      <option
-        value="Audience Pass"
-        data-amount="299"
-      >
-        Audience Pass — ₹299
-      </option>
-
-    </select>
-
-
-    <!-- AUTOMATIC AMOUNT -->
     <div class="amount-box">
-
-      <div class="amount-title">
-        Total Amount
-      </div>
-
-      <div class="amount">
-        ₹<span id="amount">0</span>
-      </div>
-
+      <div class="amount-title">Total Amount</div>
+      <div class="amount-value" id="totalAmount">₹0</div>
     </div>
 
-
-    <!-- UPI -->
-    <div class="upi-box">
-
-      <div>💳 Payment UPI ID</div>
-
-      <div class="upi-id">
-        dwivediadarsh628@okaxis
-      </div>
-
-    </div>
-
-
-    <!-- PAY BUTTON -->
-    <button
-      type="button"
-      id="payButton"
-      disabled
-    >
-      💳 SELECT PASS FIRST
-    </button>
-
-    <div class="note">
-      Payment button mobile me UPI app open karega.
-    </div>
-
-
-    <!-- UTR -->
-    <label>UTR / Transaction ID</label>
-
-    <input
-      type="text"
-      id="utr"
-      placeholder="Enter UTR / Transaction ID"
-      required
-    >
-
-
-    <!-- SCREENSHOT -->
-    <label>Payment Screenshot</label>
-
-    <input
-      type="file"
-      id="screenshot"
-      accept="image/*"
-      required
-    >
-
-
-    <!-- SUBMIT -->
-    <button
-      type="submit"
-      id="submitButton"
-    >
-      ✅ SUBMIT REGISTRATION
-    </button>
-
-  </form>
-
-
-  <div id="message"></div>
-
-</div>
-
-
-<script>
-
-  // ==========================================
-  // SUPABASE
-  // ==========================================
-
-  const SUPABASE_URL =
-    "https://rdjdsqlawhawoywgvyro.supabase.co";
-
-  const SUPABASE_PUBLISHABLE_KEY =
-    sb_publishable_c_uKHsH5pKT8TyKa1IqC-g_-nLUMI5W";
-
-  const supabaseClient =
-    supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
-
-
-  // ==========================================
-  // ELEMENTS
-  // ==========================================
-
-  const passType =
-    document.getElementById("pass_type");
-
-  const amount =
-    document.getElementById("amount");
-
-  const payButton =
-    document.getElementById("payButton");
-
-  const form =
-    document.getElementById("registrationForm");
-
-  const message =
-    document.getElementById("message");
-
-
-  // ==========================================
-  // PASS SELECT → AUTOMATIC AMOUNT
-  // ==========================================
-
-  passType.addEventListener("change", function () {
-
-    const selectedOption =
-      this.options[this.selectedIndex];
-
-    const selectedAmount =
-      Number(
-        selectedOption.getAttribute("data-amount")
-      );
-
-
-    // Show amount
-    amount.innerText =
-      selectedAmount;
-
-
-    // Update payment button
-    if (selectedAmount > 0) {
-
-      payButton.disabled = false;
-
-      payButton.innerText =
-        "💳 PAY ₹" + selectedAmount + " NOW";
-
-    } else {
-
-      payButton.disabled = true;
-
-      payButton.innerText =
-        "💳 SELECT PASS FIRST";
-
-    }
-
-  });
-
-
-  // ==========================================
-  // UPI PAYMENT
-  // ==========================================
-
-  payButton.addEventListener("click", function () {
-
-    const selectedOption =
-      passType.options[passType.selectedIndex];
-
-    const selectedAmount =
-      Number(
-        selectedOption.getAttribute("data-amount")
-      );
-
-
-    if (!selectedAmount) {
-
-      alert("Please select a pass first.");
-
-      return;
-
-    }
-
-
-    const upiId =
-      "dwivediadarsh628@okaxis";
-
-    const name =
-      "Navrang Garba 2.0";
-
-
-    const upiUrl =
-      "upi://pay" +
-      "?pa=" + encodeURIComponent(upiId) +
-      "&pn=" + encodeURIComponent(name) +
-      "&am=" + selectedAmount +
-      "&cu=INR";
-
-
-    // Open UPI payment
-    window.location.href =
-      upiUrl;
-
-  });
-
-
-  // ==========================================
-  // FORM SUBMIT
-  // ==========================================
-
-  form.addEventListener(
-    "submit",
-    async function (event) {
-
-      event.preventDefault();
-
-
-      message.innerHTML =
-        "⏳ Please wait... Registration submitting.";
-
-
-      try {
-
-        // --------------------------------------
-        // GET FORM DATA
-        // --------------------------------------
-
-        const name =
-          document.getElementById("name")
-            .value.trim();
-
-        const mobile =
-          document.getElementById("mobile")
-            .value.trim();
-
-        const gender =
-          document.getElementById("gender")
-            .value;
-
-        const dob =
-          document.getElementById("dob")
-            .value;
-
-        const pass =
-          passType.value;
-
-        const selectedOption =
-          passType.options[
-            passType.selectedIndex
-          ];
-
-        const selectedAmount =
-          Number(
-            selectedOption
-              .getAttribute("data-amount")
-          );
-
-        const utr =
-          document.getElementById("utr")
-            .value.trim();
-
-        const screenshot =
-          document.getElementById("screenshot")
-            .files[0];
-
-
-        // --------------------------------------
-        // VALIDATION
-        // --------------------------------------
-
-        if (!name) {
-          throw new Error(
-            "Please enter your name."
-          );
-        }
-
-
-        if (!/^[0-9]{10}$/.test(mobile)) {
-          throw new Error(
-            "Please enter a valid 10 digit mobile number."
-          );
-        }
-
-
-        if (!pass || selectedAmount === 0) {
-          throw new Error(
-            "Please select a pass."
-          );
-        }
-
-
-        if (!utr) {
-          throw new Error(
-            "Please enter UTR / Transaction ID."
-          );
-        }
-
-
-        if (!screenshot) {
-          throw new Error(
-            "Please upload payment screenshot."
-          );
-        }
-
-
-        // --------------------------------------
-        // INSERT REGISTRATION
-        // --------------------------------------
-
-        const {
-          data,
-          error
-        } = await supabaseClient
-
-          .from("Registration")
-
-          .insert([{
-
-            name: name,
-
-            mobile: mobile,
-
-            gender: gender,
-
-            dob: dob,
-
-            pass_type: pass,
-
-            amount: selectedAmount,
-
-            utr: utr,
-
-            payment_status: "pending",
-
-            pass_status: "not_generated"
-
-          }])
-
-          .select()
-
-          .single();
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        // --------------------------------------
-        // UPLOAD SCREENSHOT
-        // --------------------------------------
-
-        const safeFileName =
-          screenshot.name
-            .replace(/[^a-zA-Z0-9._-]/g, "_");
-
-
-        const filePath =
-          data.id +
-          "/payment_" +
-          Date.now() +
-          "_" +
-          safeFileName;
-
-
-        const {
-          error: uploadError
-        } = await supabaseClient
-
-          .storage
-
-          .from("payment-screenshots")
-
-          .upload(
-            filePath,
-            screenshot
-          );
-
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
-
-        // --------------------------------------
-        // SAVE SCREENSHOT PATH
-        // --------------------------------------
-
-        const {
-          error: updateError
-        } = await supabaseClient
-
-          .from("Registration")
-
-          .update({
-
-            payment_screenshot:
-              filePath
-
-          })
-
-          .eq(
-            "id",
-            data.id
-          );
-
-
-        if (updateError) {
-          throw updateError;
-        }
-
-
-        // --------------------------------------
-        // SUCCESS
-        // --------------------------------------
-
-        message.innerHTML =
-          "✅ REGISTRATION SUCCESSFUL!<br><br>" +
-
-          "Your payment is pending verification.<br>" +
-
-          "Admin payment verify karega.<br>" +
-
-          "Uske baad final pass generate hoga.";
-
-
-        form.reset();
-
-        amount.innerText =
-          "0";
-
-        payButton.disabled =
-          true;
-
-        payButton.innerText =
-          "💳 SELECT PASS FIRST";
-
-
+    <button id="payBtn" class="pay-btn" disabled>SELECT PASS FIRST</button>
+  </div>
+
+  <script>
+    const passSelect = document.getElementById('passType');
+    const amountDisplay = document.getElementById('totalAmount');
+    const payButton = document.getElementById('payBtn');
+
+    // Dropdown change hone par amount update karne ka logic
+    passSelect.addEventListener('change', function() {
+      const selectedPrice = this.value;
+
+      if (selectedPrice) {
+        amountDisplay.innerText = `₹${selectedPrice}`;
+        payButton.innerText = `PAY ₹${selectedPrice}`;
+        payButton.disabled = false;
+      } else {
+        amountDisplay.innerText = '₹0';
+        payButton.innerText = 'SELECT PASS FIRST';
+        payButton.disabled = true;
       }
-
-      catch (error) {
-
-        console.error(error);
-
-        message.innerHTML =
-          "❌ Registration failed.<br><br>" +
-          error.message;
-
-      }
-
-    }
-
-  );
-
-</script>
+    });
+  </script>
 
 </body>
 </html>
