@@ -57,9 +57,9 @@
         <label for="passType">Select Pass Type</label>
         <select id="passType" required>
           <option value="" disabled selected>Choose a pass</option>
-          <option value="299">Audience Pass — ₹299</option>
-          <option value="399">Freestyle Pass — ₹399</option>
-          <option value="499">Participant Pass — ₹499</option>
+          <option value="299">Audience Pass - ₹299</option>
+          <option value="399">Freestyle Pass - ₹399</option>
+          <option value="499">Participant Pass - ₹499</option>
         </select>
       </div>
 
@@ -105,15 +105,17 @@
     const payButton = document.getElementById('payBtn');
     const upiId = "dwivediadarsh628@okaxis";
 
-    passSelect.addEventListener('change', function() {
-      const price = this.value;
-      const selectedOptionText = this.options[this.selectedIndex].text;
-      const passName = selectedOptionText.split('—')[0].trim();
-
+    function updatePassPrice() {
+      const price = passSelect.value;
+      
       if (price) {
+        const selectedText = passSelect.options[passSelect.selectedIndex].text;
+        const passName = selectedText.split('-')[0].trim();
+
         amountDisplay.innerText = `₹${price}`;
         payButton.innerText = `PAY ₹${price} VIA UPI`;
         payButton.classList.remove('disabled');
+        
         const upiUrl = `upi://pay?pa=${upiId}&pn=Adarsh%20Dwivedi&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
         payButton.setAttribute('href', upiUrl);
       } else {
@@ -122,7 +124,10 @@
         payButton.classList.add('disabled');
         payButton.setAttribute('href', '#');
       }
-    });
+    }
+
+    passSelect.addEventListener('change', updatePassPrice);
+    passSelect.addEventListener('input', updatePassPrice);
 
     const form = document.getElementById('registrationForm');
     const statusMsg = document.getElementById('statusMsg');
