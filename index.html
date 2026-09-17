@@ -54,7 +54,7 @@
 
       <div class="form-group">
         <label for="passType">Select Pass Type</label>
-        <select id="passType" onchange="updatePassPrice()" required>
+        <select id="passType" onchange="updatePassPrice(this.value)" required>
           <option value="" disabled selected>Choose a pass</option>
           <option value="299">Audience Pass - ₹299</option>
           <option value="399">Freestyle Pass - ₹399</option>
@@ -97,18 +97,19 @@
     const BUCKET_NAME = 'screenshots';
     const TABLE_NAME = 'registrations';
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
     const upiId = "dwivediadarsh628@okaxis";
 
-    function updatePassPrice() {
+    function updatePassPrice(priceValue) {
       const passSelect = document.getElementById('passType');
       const amountDisplay = document.getElementById('totalAmount');
       const payButton = document.getElementById('payBtn');
-      const price = passSelect.value;
+      const price = priceValue || passSelect.value;
 
       if (price) {
-        const selectedText = passSelect.options[passSelect.selectedIndex].text;
-        const passName = selectedText.split('-')[0].trim();
+        const selectedOption = passSelect.options[passSelect.selectedIndex];
+        const selectedText = selectedOption ? selectedOption.text : "";
+        const passName = selectedText.includes('-') ? selectedText.split('-')[0].trim() : selectedText;
 
         amountDisplay.innerText = "₹" + price;
         payButton.innerText = "PAY ₹" + price + " VIA UPI";
@@ -130,6 +131,13 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      if (!supabase) {
+        statusMsg.style.color = "red";
+        statusMsg.innerText = "Supabase initialization failed. Check your network or CDN link.";
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.innerText = "Submitting...";
       statusMsg.style.color = "blue";
@@ -175,7 +183,7 @@
         statusMsg.style.color = "green";
         statusMsg.innerText = "Registration Successful!";
         form.reset();
-        updatePassPrice();
+        updatePassPrice('');
 
       } catch (err) {
         console.error("Error:", err);
