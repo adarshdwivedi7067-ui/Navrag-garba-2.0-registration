@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navrang Garba - Pass Registration</title>
+  <title>Navrang Garba 2.0 - Pass Registration</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; padding: 20px; }
@@ -26,6 +26,7 @@
 <body>
 
   <div class="form-container">
+    <h2 style="text-align: center; margin-top: 0; color: #333;">Navrang Garba 2.0</h2>
     <form id="registrationForm">
       <div class="form-group">
         <label for="fullName">Full Name</label>
@@ -54,7 +55,7 @@
 
       <div class="form-group">
         <label for="passType">Select Pass Type</label>
-        <select id="passType" onchange="updatePassPrice(this.value)" required>
+        <select id="passType" required>
           <option value="" disabled selected>Choose a pass</option>
           <option value="299">Audience Pass - ₹299</option>
           <option value="399">Freestyle Pass - ₹399</option>
@@ -96,103 +97,112 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_c_uKHsH5pKT8TyKa1IqC-g_-nLUMI5W';
     const BUCKET_NAME = 'screenshots';
     const TABLE_NAME = 'registrations';
-
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
     const upiId = "dwivediadarsh628@okaxis";
 
-    function updatePassPrice(priceValue) {
+    // Amount Calculation Logic
+    function handlePassChange() {
       const passSelect = document.getElementById('passType');
       const amountDisplay = document.getElementById('totalAmount');
       const payButton = document.getElementById('payBtn');
-      const price = priceValue || passSelect.value;
+      
+      const price = passSelect.value;
 
-      if (price) {
-        const selectedOption = passSelect.options[passSelect.selectedIndex];
-        const selectedText = selectedOption ? selectedOption.text : "";
-        const passName = selectedText.includes('-') ? selectedText.split('-')[0].trim() : selectedText;
+      if (price && price !== "") {
+        const selectedOptionText = passSelect.options[passSelect.selectedIndex].text;
+        const passName = selectedOptionText.split('-')[0].trim();
 
-        amountDisplay.innerText = "₹" + price;
-        payButton.innerText = "PAY ₹" + price + " VIA UPI";
+        amountDisplay.textContent = '₹' + price;
+        payButton.textContent = 'PAY ₹' + price + ' VIA UPI';
         payButton.classList.remove('disabled');
 
-        const upiUrl = "upi://pay?pa=" + upiId + "&pn=Adarsh%20Dwivedi&am=" + price + "&cu=INR&tn=" + encodeURIComponent(passName);
+        const upiUrl = 'upi://pay?pa=' + upiId + '&pn=Adarsh%20Dwivedi&am=' + price + '&cu=INR&tn=' + encodeURIComponent(passName);
         payButton.setAttribute('href', upiUrl);
       } else {
-        amountDisplay.innerText = '₹0';
-        payButton.innerText = 'SELECT PASS FIRST';
+        amountDisplay.textContent = '₹0';
+        payButton.textContent = 'SELECT PASS FIRST';
         payButton.classList.add('disabled');
         payButton.setAttribute('href', '#');
       }
     }
 
-    const form = document.getElementById('registrationForm');
-    const statusMsg = document.getElementById('statusMsg');
-    const submitBtn = document.getElementById('submitBtn');
+    // Attach Event Listener After Page Loads Completely
+    document.addEventListener('DOMContentLoaded', () => {
+      const passSelect = document.getElementById('passType');
+      passSelect.addEventListener('change', handlePassChange);
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      if (!supabase) {
-        statusMsg.style.color = "red";
-        statusMsg.innerText = "Supabase initialization failed. Check your network or CDN link.";
-        return;
+      // Initialize Supabase Client safely
+      let supabaseClient = null;
+      if (typeof supabase !== 'undefined') {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
-      submitBtn.disabled = true;
-      submitBtn.innerText = "Submitting...";
-      statusMsg.style.color = "blue";
-      statusMsg.innerText = "Processing registration...";
+      const form = document.getElementById('registrationForm');
+      const statusMsg = document.getElementById('statusMsg');
+      const submitBtn = document.getElementById('submitBtn');
 
-      try {
-        const passSelect = document.getElementById('passType');
-        const amountDisplay = document.getElementById('totalAmount');
-        const fileInput = document.getElementById('screenshot');
-        const file = fileInput.files[0];
-        const fileName = `${Date.now()}_${file.name}`;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from(BUCKET_NAME)
-          .upload(fileName, file);
+        if (!supabaseClient) {
+          statusMsg.style.color = "red";
+          statusMsg.innerText = "Error: Database connection failed. Reload page.";
+          return;
+        }
 
-        if (uploadError) throw uploadError;
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+        statusMsg.style.color = "blue";
+        statusMsg.innerText = "Processing registration...";
 
-        const { data: publicUrlData } = supabase.storage
-          .from(BUCKET_NAME)
-          .getPublicUrl(fileName);
+        try {
+          const fileInput = document.getElementById('screenshot');
+          const file = fileInput.files[0];
+          const fileName = Date.now() + '_' + file.name;
 
-        const screenshotUrl = publicUrlData.publicUrl;
+          const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            .from(BUCKET_NAME)
+            .upload(fileName, file);
 
-        const { data, error: insertError } = await supabase
-          .from(TABLE_NAME)
-          .insert([
-            {
-              full_name: document.getElementById('fullName').value,
-              phone: document.getElementById('phone').value,
-              gender: document.getElementById('gender').value,
-              dob: document.getElementById('dob').value,
-              pass_type: passSelect.options[passSelect.selectedIndex].text,
-              amount: amountDisplay.innerText,
-              utr: document.getElementById('utr').value,
-              screenshot_url: screenshotUrl,
-              status: 'pending'
-            }
-          ]);
+          if (uploadError) throw uploadError;
 
-        if (insertError) throw insertError;
+          const { data: publicUrlData } = supabaseClient.storage
+            .from(BUCKET_NAME)
+            .getPublicUrl(fileName);
 
-        statusMsg.style.color = "green";
-        statusMsg.innerText = "Registration Successful!";
-        form.reset();
-        updatePassPrice('');
+          const screenshotUrl = publicUrlData.publicUrl;
 
-      } catch (err) {
-        console.error("Error:", err);
-        statusMsg.style.color = "red";
-        statusMsg.innerText = "Error: " + (err.message || "Failed to submit.");
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "SUBMIT REGISTRATION";
-      }
+          const { data, error: insertError } = await supabaseClient
+            .from(TABLE_NAME)
+            .insert([
+              {
+                full_name: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                pass_type: passSelect.options[passSelect.selectedIndex].text,
+                amount: document.getElementById('totalAmount').textContent,
+                utr: document.getElementById('utr').value,
+                screenshot_url: screenshotUrl,
+                status: 'pending'
+              }
+            ]);
+
+          if (insertError) throw insertError;
+
+          statusMsg.style.color = "green";
+          statusMsg.innerText = "Registration Successful!";
+          form.reset();
+          handlePassChange();
+
+        } catch (err) {
+          console.error("Error:", err);
+          statusMsg.style.color = "red";
+          statusMsg.innerText = "Error: " + (err.message || "Failed to submit.");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "SUBMIT REGISTRATION";
+        }
+      });
     });
   </script>
 </body>
