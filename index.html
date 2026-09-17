@@ -107,7 +107,8 @@
 
     passSelect.addEventListener('change', function() {
       const price = this.value;
-      const passName = this.options[this.selectedIndex].text.split('—')[0].trim();
+      const selectedOptionText = this.options[this.selectedIndex].text;
+      const passName = selectedOptionText.split('—')[0].trim();
 
       if (price) {
         amountDisplay.innerText = `₹${price}`;
