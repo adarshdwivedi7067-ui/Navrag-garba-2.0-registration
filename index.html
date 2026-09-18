@@ -150,11 +150,33 @@
         }
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Submitting...";
+        submitBtn.innerText = "Checking UTR...";
         statusMsg.style.color = "blue";
-        statusMsg.innerText = "Processing registration...";
+        statusMsg.innerText = "Verifying transaction details...";
 
         try {
+          const enteredUtr = document.getElementById('utr').value.trim();
+
+          // 1. Check if UTR already exists in the database
+          const { data: existingUtrRows, error: checkError } = await supabaseClient
+            .from(TABLE_NAME)
+            .select('id, utr')
+            .eq('utr', enteredUtr);
+
+          if (checkError) throw checkError;
+
+          if (existingUtrRows && existingUtrRows.length > 0) {
+            // UTR is already used! Stop submission.
+            statusMsg.style.color = "red";
+            statusMsg.innerText = "❌ This UTR / Transaction ID has already been used. Please enter a valid unique UTR.";
+            submitBtn.disabled = false;
+            submitBtn.innerText = "SUBMIT REGISTRATION";
+            return;
+          }
+
+          submitBtn.innerText = "Uploading Screenshot...";
+          statusMsg.innerText = "Uploading payment screenshot...";
+
           const fileInput = document.getElementById('screenshot');
           const file = fileInput.files[0];
           const fileName = Date.now() + '_' + file.name;
@@ -171,6 +193,9 @@
 
           const screenshotUrl = publicUrlData.publicUrl;
 
+          submitBtn.innerText = "Submitting...";
+          statusMsg.innerText = "Finalizing registration...";
+
           const { data, error: insertError } = await supabaseClient
             .from(TABLE_NAME)
             .insert([
@@ -181,7 +206,7 @@
                 dob: document.getElementById('dob').value,
                 pass_type: passSelect.options[passSelect.selectedIndex].text,
                 amount: document.getElementById('totalAmount').textContent,
-                utr: document.getElementById('utr').value,
+                utr: enteredUtr,
                 screenshot_url: screenshotUrl,
                 status: 'pending'
               }
