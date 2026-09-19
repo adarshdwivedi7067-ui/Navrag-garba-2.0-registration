@@ -14,45 +14,45 @@
   <style>
     body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; padding: 20px; margin: 0; }
     .form-container { background: #ffffff; padding: 25px; border-radius: 8px; width: 100%; max-width: 450px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .form-group { margin-bottom: 16px; }
-    label { display: block; font-weight: bold; margin-bottom: 6px; color: #333; font-size: 14px; }
-    select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 14px; }
+    select, input { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
     
-    /* Top Notice Box Styling with Proper Alignment */
-    .notice-box { background-color: #e8f4fd; border-left: 4px solid #007bff; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; color: #004085; line-height: 1.6; }
-    .notice-box strong { display: block; margin-bottom: 8px; font-size: 14px; color: #002752; }
-    .notice-box ul { margin: 0; padding-left: 18px; }
-    .notice-box li { margin-bottom: 6px; }
+    /* Compact Top Notice Box Styling */
+    .notice-box { background-color: #e8f4fd; border-left: 4px solid #007bff; padding: 8px 10px; border-radius: 4px; margin-bottom: 15px; font-size: 12px; color: #004085; line-height: 1.4; }
+    .notice-box strong { display: block; margin-bottom: 3px; font-size: 13px; color: #002752; }
+    .notice-box ul { margin: 0; padding-left: 16px; }
+    .notice-box li { margin-bottom: 2px; }
 
-    .amount-box { background-color: #eef3f8; text-align: center; padding: 15px; border-radius: 6px; margin: 15px 0; }
+    .amount-box { background-color: #eef3f8; text-align: center; padding: 12px; border-radius: 6px; margin: 12px 0; }
     .amount-title { font-size: 13px; color: #666; }
-    .amount-value { font-size: 26px; font-weight: bold; color: #111; margin-top: 4px; }
+    .amount-value { font-size: 24px; font-weight: bold; color: #111; margin-top: 3px; }
     
     /* Payment Section Wrapper & Timer */
-    .payment-section-wrapper { border: 2px dashed #007bff; padding: 15px; border-radius: 8px; background: #fbfdff; margin-top: 15px; display: none; }
-    .timer-box { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 8px; border-radius: 4px; text-align: center; font-size: 13px; font-weight: bold; margin-bottom: 12px; }
-    .timer-box span { color: #d9534f; font-size: 15px; }
+    .payment-section-wrapper { border: 2px dashed #007bff; padding: 12px; border-radius: 8px; background: #fbfdff; margin-top: 12px; display: none; }
+    .timer-box { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 6px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+    .timer-box span { color: #d9534f; font-size: 14px; }
 
-    .upi-info { text-align: center; font-size: 13px; color: #555; margin-bottom: 12px; }
-    .qr-container { text-align: center; margin: 15px 0; padding: 10px; background: #fafafa; border: 1px dashed #ccc; border-radius: 6px; }
-    .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 4px; }
-    .qr-text { font-size: 12px; color: #666; margin-top: 5px; }
+    .upi-info { text-align: center; font-size: 13px; color: #555; margin-bottom: 10px; }
+    .qr-container { text-align: center; margin: 10px 0; padding: 8px; background: #fafafa; border: 1px dashed #ccc; border-radius: 6px; }
+    .qr-container img { width: 150px; height: 150px; margin-top: 6px; border-radius: 4px; }
+    .qr-text { font-size: 11px; color: #666; margin-top: 4px; }
 
-    .pay-btn { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; text-transform: uppercase; text-decoration: none; display: inline-block; text-align: center; box-sizing: border-box; margin-bottom: 10px; }
+    .pay-btn { width: 100%; padding: 11px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; text-decoration: none; display: inline-block; text-align: center; box-sizing: border-box; margin-bottom: 8px; }
     .pay-btn.disabled { background-color: #a0b2c6; cursor: not-allowed; pointer-events: none; }
     
-    .step-2 { margin-top: 25px; padding-top: 20px; border-top: 2px dashed #ddd; }
-    .submit-btn { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .step-2 { margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; }
+    .submit-btn { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 8px; }
     .submit-btn:disabled { background-color: #94d3a2; cursor: not-allowed; }
-    #statusMsg { margin-top: 15px; text-align: center; font-weight: bold; }
+    #statusMsg { margin-top: 12px; text-align: center; font-weight: bold; font-size: 13px; }
   </style>
 </head>
 <body>
 
   <div class="form-container">
-    <h2 style="text-align: center; margin-top: 0; color: #333;">Navrang Garba 2.0</h2>
+    <h2 style="text-align: center; margin-top: 0; margin-bottom: 12px; color: #333;">Navrang Garba 2.0</h2>
     
-    <!-- Top Notice Box (Properly Aligned Guidelines & Rules) -->
+    <!-- Top Notice Box (Compact & Clean Spacing) -->
     <div class="notice-box">
       <strong>📌 Important Guidelines & Rules:</strong>
       <ul>
@@ -108,11 +108,11 @@
         <div class="amount-value" id="totalAmount">₹0</div>
       </div>
 
-      <!-- Payment Section With Note & 2-Min Timer (Appears when pass is selected) -->
+      <!-- Payment Section With Note & Timer -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         
         <!-- Payment Section Note -->
-        <div class="notice-box" style="margin-bottom: 12px; background-color: #fff3cd; border-color: #ffc107; color: #856404;">
+        <div class="notice-box" style="margin-bottom: 10px; background-color: #fff3cd; border-color: #ffc107; color: #856404;">
           <strong>⚡ Payment Mode Notice:</strong>
           • Only UPI & QR Code scan is accepted. Complete your payment quickly before the timer expires!
         </div>
@@ -127,7 +127,7 @@
         </div>
 
         <div id="qrBox" class="qr-container">
-          <span style="font-size: 13px; font-weight: bold; color: #333;">Scan with Paytm, PhonePe, or GPay</span><br>
+          <span style="font-size: 12px; font-weight: bold; color: #333;">Scan with Paytm, PhonePe, or GPay</span><br>
           <img id="qrImage" src="" alt="UPI QR Code">
           <div class="qr-text">Scan this QR code using any UPI app</div>
         </div>
