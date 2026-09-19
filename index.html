@@ -32,6 +32,8 @@
     .submit-btn { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     .submit-btn:disabled { background-color: #94d3a2; cursor: not-allowed; }
     #statusMsg { margin-top: 15px; text-align: center; font-weight: bold; }
+    .notes-box { margin-top: 20px; font-size: 12px; color: #555; background: #fff8dc; padding: 10px; border-radius: 6px; border: 1px solid #f2e3c6; }
+    .notes-box ul { margin: 5px 0 0 15px; padding: 0; }
   </style>
 </head>
 <body>
@@ -52,10 +54,7 @@
       <div class="form-group">
         <label for="gender">Select Gender</label>
         <select id="gender" required>
-          <option value="" disabled selected>Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
+          <option value="Female" selected>Female</option>
         </select>
       </div>
 
@@ -106,6 +105,14 @@
       </div>
 
       <div id="statusMsg"></div>
+
+      <div class="notes-box">
+        <strong>Important Notes:</strong>
+        <ul>
+          <li>One pass is valid for one person only.</li>
+          <li>Please submit your UTR / payment screenshot within 30 minutes of completing the payment. Failure to do so may result in cancellation of the registration.</li>
+        </ul>
+      </div>
     </form>
   </div>
 
@@ -229,7 +236,7 @@
                 amount: document.getElementById('totalAmount').textContent,
                 utr: enteredUtr,
                 screenshot_url: screenshotUrl,
-                status: 'pending'
+                pass_status: 'pending'
               }
             ]);
 
