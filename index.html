@@ -303,6 +303,10 @@
           submitBtn.innerText = "Submitting...";
           statusMsg.innerText = "Finalizing registration...";
 
+          // Exact Indian Standard Time (IST) generation
+          const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+          const exactISTString = new Date(nowIST).toISOString();
+
           const { data, error: insertError } = await supabaseClient
             .from(TABLE_NAME)
             .insert([
@@ -315,7 +319,8 @@
                 amount: document.getElementById('totalAmount').textContent,
                 utr: enteredUtr,
                 screenshot_url: screenshotUrl,
-                pass_status: 'pending'
+                pass_status: 'pending',
+                created_at: exactISTString // Explicitly sending correct IST time
               }
             ]);
 
