@@ -52,18 +52,6 @@
       </div>
 
       <div class="form-group">
-        <label for="gender">Select Gender</label>
-        <select id="gender" required>
-          <option value="Female" selected>Female</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="dob">Date of Birth</label>
-        <input type="date" id="dob" required>
-      </div>
-
-      <div class="form-group">
         <label for="passType">Select Pass Type</label>
         <select id="passType" required>
           <option value="" disabled selected>Choose a pass</option>
@@ -71,6 +59,18 @@
           <option value="399">Freestyle Pass - ₹399</option>
           <option value="499">Participant Pass - ₹499</option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label for="gender">Select Gender</label>
+        <select id="gender" required>
+          <option value="" disabled selected>Select pass type first</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" required>
       </div>
 
       <div class="amount-box">
@@ -125,12 +125,34 @@
 
     function handlePassChange() {
       const passSelect = document.getElementById('passType');
+      const genderSelect = document.getElementById('gender');
       const amountDisplay = document.getElementById('totalAmount');
       const payButton = document.getElementById('payBtn');
       const qrBox = document.getElementById('qrBox');
       const qrImage = document.getElementById('qrImage');
       
       const price = passSelect.value;
+
+      // Update Gender options based on pass selection
+      genderSelect.innerHTML = '';
+      if (price === "499") {
+        // Participant Pass -> Only Female
+        let opt = document.createElement('option');
+        opt.value = "Female";
+        opt.textContent = "Female";
+        genderSelect.appendChild(opt);
+        genderSelect.value = "Female";
+      } else if (price === "299" || price === "399") {
+        // Audience / Freestyle Pass -> Male, Female, Other
+        genderSelect.innerHTML = `
+          <option value="" disabled selected>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        `;
+      } else {
+        genderSelect.innerHTML = `<option value="" disabled selected>Select pass type first</option>`;
+      }
 
       if (price && price !== "") {
         const selectedOptionText = passSelect.options[passSelect.selectedIndex].text;
